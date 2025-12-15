@@ -30,6 +30,7 @@ def input_income():
 
         withholding_tax = float(input("Is there any withholding tax? Enter amount: "))
         money_tracking['cwt_credits'].append(withholding_tax)
+        
         print()
     except Exception as e:
         print("Error", e, "\n")
@@ -271,5 +272,6 @@ def main():
         print("\nError", e, "\n")
 
     main()
+
 
 main()
