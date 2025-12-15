@@ -15,6 +15,7 @@ Q4	              October 1 – December 31	        April 15 next year (Rolled in
 
 money_tracking = {
     'income' : [],
+    'cwt_credits' : [],
     'expense' : [],
     'input_vat' : [],
     'vat_expense' : []
@@ -26,6 +27,9 @@ def input_income():
     try:
         income = float(input("Income amount ₱"))
         money_tracking['income'].append(income)
+
+        withholding_tax = float(input("Is there any withholding tax? Enter amount: "))
+        money_tracking['cwt_credits'].append(withholding_tax)
         print()
     except Exception as e:
         print("Error", e, "\n")
@@ -57,6 +61,11 @@ def gross_income():
     total_income = sum(money_tracking.get('income', []))
 
     return total_income
+
+def total_withholding_tax():
+    total_cwt_credits  = sum(money_tracking.get('cwt_credits', []))
+
+    return total_cwt_credits
 
 def deduction():
     deduct_expenses = sum(money_tracking.get('expense', []))
@@ -95,7 +104,7 @@ def taxable_income_osd():
 #
 
 
-# COMPUTE TAX RATES + SUMMARY AND RECOMMENDATION REPORTS
+# COMPUTE TAX RATES
 """
 Best for businesses or self-employed individuals with high operating expenses 
 or a large cost of goods sold, where deducting these costs significantly 
@@ -172,26 +181,27 @@ def value_added_tax():
 #
 
 
-# TOTAL TAX DUE & DISPOSABLE INCOME(SAFE TO SPEND FOR PERSONAL USE)
+# TOTAL TAX DUE & DISPOSABLE INCOME (SAFE TO SPEND FOR PERSONAL USE) + SUMMARY AND RECOMMENDATION REPORTS
 def display_total():
     print("---Total Tax to Pay & Disposable Income---\n")
     if gross_income() > 3_000_000:
         # Vat
-        total_tax_osd = value_added_tax() + income_tax_osd()
-        total_tax_itemized = value_added_tax() + income_tax_itemized()
+        total_tax_osd = (value_added_tax() + income_tax_osd()) - total_withholding_tax()
+        total_tax_itemized = (value_added_tax() + income_tax_itemized()) - total_withholding_tax()
 
         disposable_income_osd = gross_income() - total_tax_osd
         disposable_income_itemized = gross_income() - total_tax_itemized
     else:
         # Non-Vat
-        total_tax_osd = percentage_tax() + income_tax_osd()
-        total_tax_itemized = percentage_tax() + income_tax_itemized()
+        total_tax_osd = (percentage_tax() + income_tax_osd()) - total_withholding_tax()
+        total_tax_itemized = (percentage_tax() + income_tax_itemized()) - total_withholding_tax()
 
         disposable_income_osd = gross_income() - total_tax_osd
         disposable_income_itemized = gross_income() - total_tax_itemized
 
-        disposable_income_8 = (gross_income() - flat_8_percent_tax()) - deduction()
-        print(f"total tax due (8%): ₱{flat_8_percent_tax():,.2f}")
+        total_tax_8 = flat_8_percent_tax() - total_withholding_tax()
+        disposable_income_8 = (gross_income() - flat_8_percent_tax()) - deduction() + total_withholding_tax()
+        print(f"total tax due (8%): ₱{total_tax_8:,.2f}")
         print(f"disposable income (8%): ₱{disposable_income_8:,.2f}\n")
 
     print(f"total tax due (osd): ₱{total_tax_osd:,.2f}")
@@ -251,7 +261,8 @@ def main():
             # Tax due / Tax fee
             print("---Graduated Tax due---")
             print(f"graduated income tax due (osd): ₱{income_tax_osd():,.2f}")
-            print(f"graduated income tax due (itemized): ₱{income_tax_itemized():,.2f}\n\n")
+            print(f"graduated income tax due (itemized): ₱{income_tax_itemized():,.2f}\n")
+            print(f"total withholding tax (cwt credits): ₱{total_withholding_tax():,.2f}\n\n")
 
             display_total()
         else:
