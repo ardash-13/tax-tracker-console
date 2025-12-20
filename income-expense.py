@@ -4,12 +4,12 @@ print("==================================================")
 
 
 """
-----------------------------------------TAX CYCLE------------------------------------------------------
-Quarter	          Period Covered	                Deadline
-Q1	              January 1 – March 31	            May 15
-Q2	              April 1 – June 30	                August 15
-Q3	              July 1 – September 30	            November 15
-Q4	              October 1 – December 31	        April 15 next year (Rolled into the Annual Return)
+--------------------------------------TAX CYCLE----------------------------------------------------------------
+Quarter	         Period Covered	                Deadline
+Q1	             January 1 – March 31	        Apr 1 - May 15
+Q2	             April 1 – June 30	            Jul 1 - August 15
+Q3	             July 1 – September 30	        Oct 1 - November 15
+Q4	             October 1 – December 31	    Jan 1 - April 15 next year (Rolled into the Annual Tax Return)
 """
 
 
@@ -28,9 +28,10 @@ def input_income():
         income = float(input("Income amount ₱"))
         money_tracking['income'].append(income)
 
-        withholding_tax = float(input("Is there any withholding tax? Enter amount: "))
+        withholding_tax = 0
+        withholding_tax = float(input("Withholding tax credits. Enter amount: "))
         money_tracking['cwt_credits'].append(withholding_tax)
-        
+
         print()
     except Exception as e:
         print("Error", e, "\n")
@@ -272,6 +273,5 @@ def main():
         print("\nError", e, "\n")
 
     main()
-
 
 main()
